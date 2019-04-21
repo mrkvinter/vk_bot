@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CommandLine;
+using VK.Bot.ConsoleClient.Commands;
 
 namespace VK.Bot.ConsoleClient
 {
@@ -13,7 +14,9 @@ namespace VK.Bot.ConsoleClient
 
             var commandsList = new CommandExecutorList(parser);
 
-            
+            commandsList.Register(new Adder());
+            commandsList.Register(new HelpPrinter(commandsList));
+
             while (true)
             {
                 Console.WriteLine("Please, enter command:");
