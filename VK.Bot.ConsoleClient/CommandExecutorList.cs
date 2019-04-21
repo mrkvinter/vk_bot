@@ -6,13 +6,19 @@ using VK.Bot.ConsoleClient.Extensions;
 
 namespace VK.Bot.ConsoleClient
 {
-    public class CommandExecutorList
+    public interface ICommandExecutorList
+    {
+        List<ICommand> Commands { get; }
+        Action<string[]> this[string commandName] { get; }
+        void Register<T>(ICommandExecutor<T> commandExecutor);
+    }
+    public class CommandExecutorList : ICommandExecutorList
     {
         private readonly Dictionary<string, Action<string[]>> commandExecutors =
             new Dictionary<string, Action<string[]>>();
 
         private readonly Parser parser;
-        public List<ICommand> Commands = new List<ICommand>();
+        public List<ICommand> Commands { get; } = new List<ICommand>();
 
         public CommandExecutorList(Parser parser)
         {

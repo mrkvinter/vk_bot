@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Autofac;
 using CommandLine;
 using VkNet;
+using VkNet.Abstractions;
 using VK.Bot.ConsoleClient.Commands;
 
 namespace VK.Bot.ConsoleClient
@@ -11,35 +13,27 @@ namespace VK.Bot.ConsoleClient
     {
         private static void Main()
         {
-            var vkApi = new VkApi();
-
-            var twitStatCollector = new TwitStatCollector(new FrequencyCounter(), vkApi);
-
-            var parser = new Parser(e => { e.HelpWriter = TextWriter.Null; });
-
-            var commandsList = new CommandExecutorList(parser);
-
-            commandsList.Register(new Adder());
-            commandsList.Register(new HelpPrinter(commandsList));
-            commandsList.Register(new StatCollector(
-                vkApi,
-                twitStatCollector));
-
-            while (true)
+            using (var container = VkContainerBuilder.Build())
             {
-                Console.WriteLine("Пожалуйста, введите комманду [help - посмотреть доступные команды]:");
-                var (commandName, commandArgs) = ParseCommandLine(Console.ReadLine());
+                var commandsList = container.Resolve<ICommandExecutorList>();
 
-                if (commandName == "exit" || commandName == "")
-                    break;
+                while (true)
+                {
+                    Console.WriteLine("Пожалуйста, введите комманду [help - посмотреть доступные команды]:");
+                    var (commandName, commandArgs) = ParseCommandLine(Console.ReadLine());
 
-                try
-                {
-                    commandsList[commandName](commandArgs);
-                }
-                catch (Exception e)
-                {
-                    Console.Error.WriteLine($"Вовремя выполнения команды {commandName} произошла не предвиденная ошибка.");
+                    if (commandName == "exit" || commandName == "")
+                        break;
+
+                    try
+                    {
+                        commandsList[commandName](commandArgs);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Error.WriteLine(
+                            $"Вовремя выполнения команды {commandName} произошла не предвиденная ошибка.");
+                    }
                 }
             }
         }
@@ -54,6 +48,37 @@ namespace VK.Bot.ConsoleClient
             var commandArgs = splitArgs.Skip(1).ToArray();
 
             return (commandName, commandArgs);
+        }
+    }
+
+    public static class VkContainerBuilder
+    {
+        public static IContainer Build()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<VkApi>().As<IVkApi>();
+            builder.RegisterType<FrequencyCounter>().As<IFrequencyCounter>();
+            builder.RegisterType<TwitStatCollector>().As<ITwitStatCollector>();
+            builder.Register(c => new Parser(e => { e.HelpWriter = TextWriter.Null; })).As<Parser>();
+            builder.RegisterCommandExecutorList();
+
+            return builder.Build();
+        }
+
+        private static void RegisterCommandExecutorList(this ContainerBuilder containerBuilder)
+        {
+            containerBuilder.Register(c =>
+            {
+                var commandExecutorList = new CommandExecutorList(c.Resolve<Parser>());
+                commandExecutorList.Register(new Adder());
+                commandExecutorList.Register(new HelpPrinter(commandExecutorList));
+                commandExecutorList.Register(new StatCollector(
+                    c.Resolve<IVkApi>(),
+                    c.Resolve<ITwitStatCollector>()));
+
+                return commandExecutorList;
+            }).As<ICommandExecutorList>();
         }
     }
 }
