@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CommandLine;
+using VkNet;
 using VK.Bot.ConsoleClient.Commands;
 
 namespace VK.Bot.ConsoleClient
@@ -10,12 +11,20 @@ namespace VK.Bot.ConsoleClient
     {
         private static void Main()
         {
+            var vkApi = new VkApi();
+
+            var twitStatCollector = new TwitStatCollector(new FrequencyCounter(), vkApi);
+
             var parser = new Parser(e => { e.HelpWriter = TextWriter.Null; });
 
             var commandsList = new CommandExecutorList(parser);
 
             commandsList.Register(new Adder());
             commandsList.Register(new HelpPrinter(commandsList));
+            commandsList.Register(new StatCollector(
+                vkApi,
+                twitStatCollector,
+                () => "token"));
 
             while (true)
             {
