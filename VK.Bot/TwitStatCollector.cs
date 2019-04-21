@@ -7,7 +7,7 @@ namespace VK.Bot
 {
     public interface ITwitStatCollector
     {
-        Dictionary<char, double> Collect(int userId);
+        Dictionary<char, double> Collect(long userId);
     }
 
     public class TwitStatCollector : ITwitStatCollector
@@ -21,7 +21,7 @@ namespace VK.Bot
             this.vkApi = vkApi;
         }
 
-        public Dictionary<char, double> Collect(int userId)
+        public Dictionary<char, double> Collect(long userId)
         {
             var wallGetObject = vkApi.Wall.Get(new WallGetParams {OwnerId = userId, Count = 5}, true);
             var frequencies = frequencyCounter.GetFrequency(wallGetObject.WallPosts.Select(p => p.Text).ToArray());

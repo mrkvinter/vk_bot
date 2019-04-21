@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CommandLine;
+﻿using CommandLine;
 
 namespace VK.Bot.ConsoleClient.Options
 {
-    class StatOptions
+    internal class StatOptions : AuthOptions
     {
-        [Option("id", Required = true, HelpText = "Id пользователя, для которого надо собрать статистику.")]
-        public int UserId { get; set; }
+        [Option("user", Required = true, HelpText = "Id или имя пользователя, для которого надо собрать статистику.")]
+        public string User { get; set; }
     }
 }

@@ -23,18 +23,24 @@ namespace VK.Bot.ConsoleClient
             commandsList.Register(new HelpPrinter(commandsList));
             commandsList.Register(new StatCollector(
                 vkApi,
-                twitStatCollector,
-                () => "token"));
+                twitStatCollector));
 
             while (true)
             {
-                Console.WriteLine("Please, enter command:");
+                Console.WriteLine("Пожалуйста, введите комманду [help - посмотреть доступные команды]:");
                 var (commandName, commandArgs) = ParseCommandLine(Console.ReadLine());
 
                 if (commandName == "exit" || commandName == "")
                     break;
 
-                commandsList[commandName](commandArgs);
+                try
+                {
+                    commandsList[commandName](commandArgs);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine($"Вовремя выполнения команды {commandName} произошла не предвиденная ошибка.");
+                }
             }
         }
 
