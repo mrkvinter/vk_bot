@@ -13,7 +13,7 @@ namespace VK.Bot.ConsoleClient
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<VkApi>().As<IVkApi>();
+            builder.RegisterType<VkApi>().SingleInstance().As<IVkApi>();
             builder.RegisterType<FrequencyCounter>().As<IFrequencyCounter>();
             builder.RegisterType<TwitStatCollector>().As<ITwitStatCollector>();
             builder.Register(c => new Parser(e => { e.HelpWriter = TextWriter.Null; })).As<Parser>();
