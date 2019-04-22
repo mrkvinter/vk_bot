@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
-using VkNet.Enums.Filters;
 using VkNet.Model.RequestParams;
 using VK.Bot.ConsoleClient.Extensions;
 using VK.Bot.ConsoleClient.Options;
+using VK.Bot.Extensions;
 
 namespace VK.Bot.ConsoleClient.Commands
 {
@@ -25,16 +25,18 @@ namespace VK.Bot.ConsoleClient.Commands
         {
             if (!vkApi.TryAuthorize(options)) return;
 
-            var userInfo = vkApi.Users.Get(new List<string> {options.User}).FirstOrDefault();
+            var foundResult = vkApi.Users.TryGet(options.User);
 
-            if (userInfo == null)
+            if (foundResult.WasError)
             {
-                Console.WriteLine($"Пользователь {options.User} не найден.");
+                Console.WriteLine($"Во время поиска пользователя {options.User} произошла ошибка. ", foundResult.Value);
                 return;
             }
 
-            var stat = twitStatCollector.Collect(userInfo.Id);
+            var userInfo = foundResult.Value;
 
+            //todo: Обработать. У пользователя может быть закрыта стена.
+            var stat = twitStatCollector.Collect(userInfo.Id);
 
             var json = JsonConvert.SerializeObject(stat.Select(e => new KeyValuePair<char, double>(e.Key, Math.Round(e.Value, 2))).ToDictionary(e => e.Key, e => e.Value));
 
