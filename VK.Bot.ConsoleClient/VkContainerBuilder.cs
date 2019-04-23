@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Autofac;
 using CommandLine;
 using VkNet;
@@ -9,7 +10,7 @@ namespace VK.Bot.ConsoleClient
 {
     public static class VkContainerBuilder
     {
-        public static IContainer Build()
+        public static IContainer Build(Func<string> twoFactorAuthorization)
         {
             var builder = new ContainerBuilder();
 
@@ -17,6 +18,8 @@ namespace VK.Bot.ConsoleClient
             builder.RegisterType<FrequencyCounter>().As<IFrequencyCounter>();
             builder.RegisterType<TwitStatCollector>().As<ITwitStatCollector>();
             builder.Register(c => new Parser(e => { e.HelpWriter = TextWriter.Null; })).As<Parser>();
+            builder.Register(c => new VkAuthorizer(twoFactorAuthorization)).As<IVkAuthorizer>();
+            builder.RegisterType<VkStatTwitNotifier>().As<IVkStatTwitNotifier>();
             builder.RegisterCommandExecutorList();
 
             return builder.Build();
@@ -29,9 +32,7 @@ namespace VK.Bot.ConsoleClient
                 var commandExecutorList = new CommandExecutorList(c.Resolve<Parser>());
                 commandExecutorList.Register(new Adder());
                 commandExecutorList.Register(new HelpPrinter(commandExecutorList));
-                commandExecutorList.Register(new StatCollector(
-                    c.Resolve<IVkApi>(),
-                    c.Resolve<ITwitStatCollector>()));
+                commandExecutorList.Register(new StatCollector(c.Resolve<IVkStatTwitNotifier>()));
 
                 return commandExecutorList;
             }).As<ICommandExecutorList>();

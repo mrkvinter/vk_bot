@@ -1,54 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using VkNet.Abstractions;
-using VkNet.Model.RequestParams;
-using VK.Bot.ConsoleClient.Extensions;
 using VK.Bot.ConsoleClient.Options;
-using VK.Bot.Extensions;
 
 namespace VK.Bot.ConsoleClient.Commands
 {
     internal class StatCollector : ICommandExecutor<StatOptions>
     {
-        private readonly ITwitStatCollector twitStatCollector;
-        private readonly IVkApi vkApi;
+        private readonly IVkStatTwitNotifier statTwitNotifier;
 
-        public StatCollector(IVkApi vkApi, ITwitStatCollector twitStatCollector)
+        public StatCollector(IVkStatTwitNotifier statTwitNotifier)
         {
-            this.vkApi = vkApi;
-            this.twitStatCollector = twitStatCollector;
+            this.statTwitNotifier = statTwitNotifier;
         }
 
         public void Execute(StatOptions options)
         {
-            if (!vkApi.TryAuthorize(options)) return;
+            var result = statTwitNotifier.Notify(options.User, options.Login, options.Password);
 
-            var foundResult = vkApi.Users.TryGet(options.User);
-
-            if (foundResult.WasError)
+            if (result.WasError)
             {
-                Console.WriteLine($"Во время поиска пользователя {options.User} произошла ошибка. ", foundResult.Value);
-                return;
+                Console.WriteLine("Во время выполнения произошла ошибка: ");
+                Console.WriteLine(result.MessageError);
             }
-
-            var userInfo = foundResult.Value;
-
-            //todo: Обработать. У пользователя может быть закрыта стена.
-            var stat = twitStatCollector.Collect(userInfo.Id);
-
-            var json = JsonConvert.SerializeObject(stat.Select(e => new KeyValuePair<char, double>(e.Key, Math.Round(e.Value, 2))).ToDictionary(e => e.Key, e => e.Value));
-
-            vkApi.Wall.Post(new WallPostParams
+            else
             {
-                OwnerId = -181436132,
-                Message = $"{userInfo.FirstName} {userInfo.LastName}, статистика для последних 5 постов: {json}"
-            });
-
-            Console.WriteLine(json);
+                Console.WriteLine("Задача успешно завершена. Статистика: ");
+                Console.WriteLine(result.Value);
+            }
         }
-
 
         public string CommandName => "stat";
         public string HelpText => "Получить статистику с последних 5 постов {id} аккаунта в vk";

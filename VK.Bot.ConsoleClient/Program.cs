@@ -8,7 +8,7 @@ namespace VK.Bot.ConsoleClient
     {
         private static void Main()
         {
-            using (var container = VkContainerBuilder.Build())
+            using (var container = VkContainerBuilder.Build(TwoFactorAuthorization))
             {
                 var commandsList = container.Resolve<ICommandExecutorList>();
 
@@ -27,10 +27,18 @@ namespace VK.Bot.ConsoleClient
                     catch (Exception e)
                     {
                         Console.Error.WriteLine(
-                            $"Вовремя выполнения команды {commandName} произошла не предвиденная ошибка.");
+                            $"Вовремя выполнения команды {commandName} произошла непредвиденная ошибка.");
                     }
                 }
             }
+        }
+
+        private static string TwoFactorAuthorization()
+        {
+            Console.WriteLine(
+                "Пожалуйста, введите код из личного сообщения от Администрации, чтобы подтвердить, что Вы — владелец страницы: ");
+            Console.WriteLine("[Если сообщение не пришло, оставьте поле пустым]");
+            return Console.ReadLine();
         }
 
         private static (string, string[]) ParseCommandLine(string line)

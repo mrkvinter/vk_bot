@@ -25,16 +25,16 @@ namespace VK.Bot.Extensions
                     .FirstOrDefault();
 
                 return result == null
-                    ? new FoundResult<User>("Пользователь не найден.")
-                    : new FoundResult<User>(result);
+                    ? FoundResult<User>.Error("Пользователь не найден.")
+                    : FoundResult<User>.Success(result);
             }
             catch (InvalidUserIdException e)
             {
-                return new FoundResult<User>(e.Message);
+                return FoundResult<User>.Error(e.Message);
             }
             catch (Exception e)
             {
-                return new FoundResult<User>($"Неизвестная ошибка. {e.Message}");
+                return FoundResult<User>.Error($"Неизвестная ошибка. {e.Message}");
             }
         }
     }
