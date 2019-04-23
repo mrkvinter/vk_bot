@@ -14,11 +14,17 @@ namespace VK.Bot.ConsoleClient
 
                 while (true)
                 {
-                    Console.WriteLine("Пожалуйста, введите комманду [help - посмотреть доступные команды]:");
+                    Console.WriteLine("Пожалуйста, введите команду [help - посмотреть доступные команды]:");
                     var (commandName, commandArgs) = ParseCommandLine(Console.ReadLine());
 
                     if (commandName == "exit" || commandName == "")
                         break;
+
+                    if (!commandsList.ContainsCommand(commandName))
+                    {
+                        Console.WriteLine($"Неизвестная команда {commandName}");
+                        break;
+                    }
 
                     try
                     {

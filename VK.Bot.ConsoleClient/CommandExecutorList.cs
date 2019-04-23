@@ -11,6 +11,7 @@ namespace VK.Bot.ConsoleClient
         List<ICommand> Commands { get; }
         Action<string[]> this[string commandName] { get; }
         void Register<T>(ICommandExecutor<T> commandExecutor);
+        bool ContainsCommand(string command);
     }
     public class CommandExecutorList : ICommandExecutorList
     {
@@ -39,6 +40,11 @@ namespace VK.Bot.ConsoleClient
                         .WithParsed(e => commandExecutor.Execute(e))
                         .PrintErrorsWithNotParsed();
                 });
+        }
+
+        public bool ContainsCommand(string command)
+        {
+            return commandExecutors.ContainsKey(command);
         }
     }
 }

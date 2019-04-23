@@ -20,11 +20,10 @@ namespace VK.Bot
                 .ToArray();
 
             var totalCountChars = letters.Length;
-            var stat = letters
+
+            return letters
                 .GroupBy(e => e)
                 .ToDictionary(e => e.Key, e => (double) e.Count() / totalCountChars);
-
-            return stat;
         }
     }
 }

@@ -7,11 +7,11 @@ namespace VK.Bot.ConsoleClient.Commands
 {
     internal class HelpPrinter : ICommandExecutor<VoidOptions>
     {
-        private readonly CommandExecutorList commandExecutorList;
+        private readonly ICommandExecutorList commandExecutorList;
         public string CommandName => "help";
         public string HelpText => "Показать этот экран справки.";
 
-        public HelpPrinter(CommandExecutorList commandExecutorList)
+        public HelpPrinter(ICommandExecutorList commandExecutorList)
         {
             this.commandExecutorList = commandExecutorList;
         }
