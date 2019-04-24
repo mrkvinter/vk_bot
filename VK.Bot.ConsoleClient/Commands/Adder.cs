@@ -12,7 +12,7 @@ namespace VK.Bot.ConsoleClient.Commands
             Console.WriteLine($"{options.ValueOne} + {options.ValueTwo} = {sum}");
         }
 
-        public string CommandName => "add";
-        public string HelpText => "Сложить два числа, и вывести на экран";
+        public string CommandName { get; } = "add";
+        public string HelpText { get; } = "Сложить два числа, и вывести на экран";
     }
 }

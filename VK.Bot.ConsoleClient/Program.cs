@@ -23,7 +23,7 @@ namespace VK.Bot.ConsoleClient
                     if (!commandsList.ContainsCommand(commandName))
                     {
                         Console.WriteLine($"Неизвестная команда {commandName}");
-                        break;
+                        continue;
                     }
 
                     try

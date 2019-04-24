@@ -15,11 +15,12 @@ namespace VK.Bot
     {
         FoundResult<string> Notify(string target, string login, string password);
     }
+
     public class VkStatTwitNotifier : IVkStatTwitNotifier
     {
-        private readonly IVkAuthorizer vkAuthorizer;
-        private readonly IVkApi vkApi;
         private readonly ITwitStatCollector twitStatCollector;
+        private readonly IVkApi vkApi;
+        private readonly IVkAuthorizer vkAuthorizer;
 
         public VkStatTwitNotifier(IVkAuthorizer vkAuthorizer, IVkApi vkApi, ITwitStatCollector twitStatCollector)
         {
@@ -66,11 +67,8 @@ namespace VK.Bot
             }
             catch (VkApiException e)
             {
-                {
-                    return FoundResult<Dictionary<char, double>>.Error(e.Message);
-                }
+                return FoundResult<Dictionary<char, double>>.Error(e.Message);
             }
-
         }
     }
 }

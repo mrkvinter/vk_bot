@@ -28,7 +28,7 @@ namespace VK.Bot.ConsoleClient.Commands
             }
         }
 
-        public string CommandName => "stat";
-        public string HelpText => "Получить статистику с последних 5 постов {id} аккаунта в vk";
+        public string CommandName { get; } = "stat";
+        public string HelpText { get; } = "Получить статистику с последних 5 постов {id} аккаунта в vk";
     }
 }
