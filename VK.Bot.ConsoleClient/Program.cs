@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Autofac;
+using log4net;
 
 namespace VK.Bot.ConsoleClient
 {
@@ -11,6 +12,7 @@ namespace VK.Bot.ConsoleClient
             using (var container = VkContainerBuilder.Build(TwoFactorAuthorization))
             {
                 var commandsList = container.Resolve<ICommandExecutorList>();
+                var log = container.Resolve<ILog>();
 
                 while (true)
                 {
@@ -33,7 +35,8 @@ namespace VK.Bot.ConsoleClient
                     catch (Exception e)
                     {
                         Console.Error.WriteLine(
-                            $"Вовремя выполнения команды {commandName} произошла непредвиденная ошибка.");
+                            $"Во время выполнения команды {commandName} произошла непредвиденная ошибка.");
+                        log.Error($"Во время выполнения команды {commandName} произошла непредвиденная ошибка.", e);
                     }
                 }
             }

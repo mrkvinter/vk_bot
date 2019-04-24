@@ -23,8 +23,10 @@ namespace VK.Bot.ConsoleClient.Commands
             }
             else
             {
-                Console.WriteLine("Задача успешно завершена. Статистика: ");
-                Console.WriteLine(result.Value);
+                Console.WriteLine("Задача успешно завершена.\nСтатистика: ");
+                Console.WriteLine(result.Value.JsonStat);
+                Console.WriteLine(
+                    $"Пост опубликован по ссылке: https://vk.com/vk_bota?w=wall-181436132_{result.Value.PostId}");
             }
         }
 

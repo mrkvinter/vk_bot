@@ -30,11 +30,11 @@ namespace VK.Bot.Extensions
             }
             catch (InvalidUserIdException e)
             {
-                return FoundResult<User>.Error(e.Message);
+                return FoundResult<User>.Error("Неверный ID пользователя", e);
             }
             catch (Exception e)
             {
-                return FoundResult<User>.Error($"Неизвестная ошибка. {e.Message}");
+                return FoundResult<User>.Error($"Неизвестная ошибка. {e.Message}", e);
             }
         }
     }

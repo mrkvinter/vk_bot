@@ -1,4 +1,5 @@
 ﻿using System;
+using log4net;
 using VkNet.Abstractions;
 using VkNet.Enums.Filters;
 using VkNet.Exception;
@@ -15,10 +16,12 @@ namespace VK.Bot
     public class VkAuthorizer : IVkAuthorizer
     {
         private readonly Func<string> twoFactorAuthorization;
+        private readonly ILog log;
 
-        public VkAuthorizer(Func<string> twoFactorAuthorization)
+        public VkAuthorizer(Func<string> twoFactorAuthorization, ILog log)
         {
             this.twoFactorAuthorization = twoFactorAuthorization;
+            this.log = log;
         }
 
         public Result TryAuthorize(IVkApi vkApi, string login, string password)
@@ -34,15 +37,16 @@ namespace VK.Bot
                     vkApi.Authorize(new ApiAuthParams
                     {
                         ApplicationId = 6952669,
-                        //Login = authOptions.Login,
-                        //Password = authOptions.Password,
+                        Login = login,
+                        Password = password,
                         Settings = Settings.Wall | Settings.Groups,
-                        //TwoFactorAuthorization = twoFactorAuthorization
+                        TwoFactorAuthorization = twoFactorAuthorization
                     });
                 }
             }
             catch (VkApiException e)
             {
+                log.Error("User cannot be authorized.", e);
                 return Result.Error("Не удалось авторизоваться, возможно введен неверный логин или пароль.");
             }
 

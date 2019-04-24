@@ -1,4 +1,6 @@
-﻿namespace VK.Bot.Models
+﻿using System;
+
+namespace VK.Bot.Models
 {
     public class Result
     {
@@ -6,9 +8,11 @@
 
         public string MessageError { get; protected set; }
 
-        public static Result Error(string message)
+        public Exception Exception { get; protected set; }
+
+        public static Result Error(string message, Exception exception = default)
         {
-            return new Result {WasError = true, MessageError = message};
+            return new Result {WasError = true, MessageError = message, Exception = exception};
         }
 
         public static Result Success()
@@ -21,9 +25,9 @@
     {
         public T Value { get; private set; }
 
-        public new static FoundResult<T> Error(string message)
+        public new static FoundResult<T> Error(string message, Exception exception = default)
         {
-            return new FoundResult<T> { WasError = true, MessageError = message };
+            return new FoundResult<T> {WasError = true, MessageError = message, Exception = exception};
         }
 
         public static FoundResult<T> Success(T value)
