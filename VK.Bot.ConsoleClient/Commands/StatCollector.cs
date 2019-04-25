@@ -26,11 +26,16 @@ namespace VK.Bot.ConsoleClient.Commands
                 Console.WriteLine("Задача успешно завершена.\nСтатистика: ");
                 Console.WriteLine(result.Value.JsonStat);
                 Console.WriteLine(
-                    $"Пост опубликован по ссылке: https://vk.com/vk_bota?w=wall-181436132_{result.Value.PostId}");
+                    $"Пост опубликован по ссылке: {GetPostUri(result.Value.PostId)}");
             }
         }
 
         public string CommandName { get; } = "stat";
         public string HelpText { get; } = "Получить статистику с последних 5 постов {id} аккаунта в vk";
+
+        private string GetPostUri(long postId)
+        {
+            return $"https://vk.com/vk_bota?w=wall-181436132_{postId}";
+        }
     }
 }
