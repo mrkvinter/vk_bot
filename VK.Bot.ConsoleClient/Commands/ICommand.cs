@@ -11,5 +11,5 @@
         void Execute(T options);
     }
 
-    public interface ICommandHelpable<T> : ICommand<T>, IHelpable { }
+    public interface IHelpableCommand<T> : ICommand<T>, IHelpable { }
 }

@@ -3,7 +3,7 @@ using VK.Bot.ConsoleClient.Options;
 
 namespace VK.Bot.ConsoleClient.Commands
 {
-    class Adder : ICommandHelpable<AdderOptions>
+    class Adder : IHelpableCommand<AdderOptions>
     {
         public void Execute(AdderOptions options)
         {

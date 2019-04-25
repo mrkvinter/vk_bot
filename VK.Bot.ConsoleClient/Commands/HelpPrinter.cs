@@ -5,7 +5,7 @@ using VK.Bot.ConsoleClient.Options;
 
 namespace VK.Bot.ConsoleClient.Commands
 {
-    internal class HelpPrinter : ICommandHelpable<VoidOptions>
+    internal class HelpPrinter : IHelpableCommand<VoidOptions>
     {
         private readonly ICommandExecutorList commandExecutorList;
 

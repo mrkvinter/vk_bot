@@ -3,7 +3,7 @@ using VK.Bot.ConsoleClient.Options;
 
 namespace VK.Bot.ConsoleClient.Commands
 {
-    internal class StatCollector : ICommandHelpable<StatOptions>
+    internal class StatCollector : IHelpableCommand<StatOptions>
     {
         private readonly IVkStatTwitNotifier statTwitNotifier;
 

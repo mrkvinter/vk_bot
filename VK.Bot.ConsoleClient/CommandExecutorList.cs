@@ -10,7 +10,7 @@ namespace VK.Bot.ConsoleClient
     {
         List<IHelpable> Commands { get; }
         Action<string[]> this[string commandName] { get; }
-        void Register<T>(ICommandHelpable<T> commandExecutor);
+        void Register<T>(IHelpableCommand<T> commandExecutor);
         bool ContainsCommand(string command);
     }
 
@@ -30,7 +30,7 @@ namespace VK.Bot.ConsoleClient
 
         public Action<string[]> this[string commandName] => commandExecutors[commandName];
 
-        public void Register<T>(ICommandHelpable<T> commandExecutor)
+        public void Register<T>(IHelpableCommand<T> commandExecutor)
         {
             Commands.Add(commandExecutor);
             commandExecutors.Add(
