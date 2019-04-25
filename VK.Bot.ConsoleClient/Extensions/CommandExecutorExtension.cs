@@ -5,7 +5,7 @@ namespace VK.Bot.ConsoleClient.Extensions
 {
     public static class CommandExecutorExtension
     {
-        public static ParserResult<T> ParseArgs<T>(this ICommandExecutor<T> executor, string[] args, Parser parser)
+        public static ParserResult<T> ParseArgs<T>(this ICommand<T> executor, string[] args, Parser parser)
         {
             return parser.ParseArguments<T>(args);
         }

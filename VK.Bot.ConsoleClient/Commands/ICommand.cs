@@ -1,13 +1,15 @@
 ﻿namespace VK.Bot.ConsoleClient.Commands
 {
-    public interface ICommand
+    public interface IHelpable
     {
         string CommandName { get; }
         string HelpText { get; }
     }
 
-    public interface ICommandExecutor<T> : ICommand
+    public interface ICommand<T>
     {
         void Execute(T options);
     }
+
+    public interface ICommandHelpable<T> : ICommand<T>, IHelpable { }
 }

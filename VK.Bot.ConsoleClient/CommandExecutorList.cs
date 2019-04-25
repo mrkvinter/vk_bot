@@ -8,27 +8,29 @@ namespace VK.Bot.ConsoleClient
 {
     public interface ICommandExecutorList
     {
-        List<ICommand> Commands { get; }
+        List<IHelpable> Commands { get; }
         Action<string[]> this[string commandName] { get; }
-        void Register<T>(ICommandExecutor<T> commandExecutor);
+        void Register<T>(ICommandHelpable<T> commandExecutor);
         bool ContainsCommand(string command);
     }
+
     public class CommandExecutorList : ICommandExecutorList
     {
         private readonly Dictionary<string, Action<string[]>> commandExecutors =
             new Dictionary<string, Action<string[]>>();
 
         private readonly Parser parser;
-        public List<ICommand> Commands { get; } = new List<ICommand>();
 
         public CommandExecutorList(Parser parser)
         {
             this.parser = parser;
         }
 
+        public List<IHelpable> Commands { get; } = new List<IHelpable>();
+
         public Action<string[]> this[string commandName] => commandExecutors[commandName];
 
-        public void Register<T>(ICommandExecutor<T> commandExecutor)
+        public void Register<T>(ICommandHelpable<T> commandExecutor)
         {
             Commands.Add(commandExecutor);
             commandExecutors.Add(
