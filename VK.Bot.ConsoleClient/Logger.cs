@@ -12,10 +12,13 @@ namespace VK.Bot.ConsoleClient
         public static void Init()
         {
             var log4netConfig = new XmlDocument();
-            log4netConfig.Load(File.OpenRead("log4net.config"));
-            var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(),
-                typeof(Hierarchy));
-            XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            using (var file = File.OpenRead("log4net.config"))
+            {
+                log4netConfig.Load(file);
+                var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(),
+                    typeof(Hierarchy));
+                XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            }
         }
     }
 }

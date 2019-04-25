@@ -21,6 +21,9 @@ namespace VK.Bot
 
             var totalCountChars = letters.Length;
 
+            if (totalCountChars == 0)
+                return new Dictionary<char, double>();
+
             return letters
                 .GroupBy(e => e)
                 .ToDictionary(e => e.Key, e => (double) e.Count() / totalCountChars);
